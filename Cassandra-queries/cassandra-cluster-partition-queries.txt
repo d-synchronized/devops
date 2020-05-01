@@ -1,0 +1,55 @@
+#Work inside a keyspace
+Use test;
+
+#Create table 'tableWithoutClustering'
+CREATE TABLE tableWithoutClustering (
+    department text,
+    id int,
+    designation text,
+    firstname text,
+    lastname text,
+    PRIMARY KEY (department)
+);
+
+CREATE TABLE tableWithMultiClustering (
+    department text,
+    id int,
+    designation text,
+    firstname text,
+    lastname text,
+    PRIMARY KEY (department,id,designation)
+);
+Insert into tableWithMultiClustering(department,id,designation,firstname,lastname) values('Development', 1 , 'Technical Lead', 'Dishant', 'Anand');
+Insert into tableWithMultiClustering(department,id,designation,firstname,lastname) values('Development', 2 , 'Solution Architect', 'Steve', 'Lin');
+Insert into tableWithMultiClustering(department,id,designation,firstname,lastname) values('Manager', 3 , 'Project Manager', 'Tajinder', 'Singh');
+Insert into tableWithMultiClustering(department,id,designation,firstname) values('RMG', 4 , 'Manager', 'Vandana');
+Insert into tableWithMultiClustering(department,id,designation,firstname,lastname) values('HR', 5 , 'Human Resource Head', 'Garima', 'Singh');
+Insert into tableWithMultiClustering(department,id,designation,firstname,lastname) values('HR', 6 , 'Senior HR', 'Taru', 'Taneja');
+
+
+ select * from tablewithmulticlustering where department = 'Development' and designation = 'Technical Lead';
+    Error -> InvalidRequest: Error from server: code=2200 [Invalid query] message="PRIMARY KEY column "designation" cannot be restricted as 
+	         preceding column "id" is not restricted"
+
+
+CREATE TABLE tableWithMultiPartition (
+    department text,
+    id int,
+    designation text,
+    firstname text,
+    lastname text,
+    PRIMARY KEY ((department,designation),id)
+);
+
+Insert into tableWithMultiPartition(department,id,designation,firstname,lastname) values('Development', 1 , 'Technical Lead', 'Dishant', 'Anand');
+Insert into tableWithMultiPartition(department,id,designation,firstname,lastname) values('Development', 2 , 'Solution Architect', 'Steve', 'Lin');
+Insert into tableWithMultiPartition(department,id,designation,firstname,lastname) values('Manager', 3 , 'Project Manager', 'Tajinder', 'Singh');
+Insert into tableWithMultiPartition(department,id,designation,firstname) values('RMG', 4 , 'Manager', 'Vandana');
+Insert into tableWithMultiPartition(department,id,designation,firstname,lastname) values('HR', 5 , 'Human Resource Head', 'Garima', 'Singh');
+Insert into tableWithMultiPartition(department,id,designation,firstname,lastname) values('HR', 6 , 'Senior HR', 'Taru', 'Taneja');
+
+select * from tablewithmultipartition  where department = 'Development';
+   Error    -> InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query as
+              it might involve data filtering and thus may have unpredictable performance. If you want to 
+			  execute this query despite the performance unpredictability, use ALLOW FILTERING"
+   Solution -> select * from tablewithmultipartition  where department = 'Development' and designation = 'Manager';

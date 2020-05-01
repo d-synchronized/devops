@@ -1,0 +1,51 @@
+#Data Types in Cassandra
+Simple     => Int,Float,Double,Varchar,text,blob,bigint,boolean,timestamp
+Collection => List,Set,Map
+UDT        => User Defined Data Types
+
+#List all keyspaces
+describe keyspaces;
+
+#Create Keyspace
+create KEYSPACE test WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'};
+
+#Describe keyspace defined
+describe KEYSPACE test
+
+#Work inside a keyspace
+Use test;
+
+#Create table 'employee'
+CREATE TABLE "Employee" (
+    department text,
+    id int,
+    designation text,
+    firstname text,
+    lastname text,
+    PRIMARY KEY (department, id)
+);
+
+#Insert QUERIES
+Insert into "Employee"(department,id,designation,firstname,lastname) values('Development', 1 , 'Technical Lead', 'Dishant', 'Anand');
+Insert into "Employee"(department,id,designation,firstname,lastname) values('Development', 2 , 'Solution Architect', 'Steve', 'Lin');
+Insert into "Employee"(department,id,designation,firstname,lastname) values('Manager', 3 , 'Project Manager', 'Tajinder', 'Singh');
+Insert into "Employee"(department,id,designation,firstname) values('RMG', 4 , 'Manager', 'Vandana');
+Insert into "Employee"(department,id,designation,firstname,lastname) values('HR', 5 , 'Human Resource Head', 'Garima', 'Singh');
+Insert into "Employee"(department,id,designation,firstname,lastname) values('HR', 6 , 'Senior HR', 'Taru', 'Taneja');
+
+
+#Select QUERIES
+select * from "Employee" where department = 'Development';
+select * from "Employee" where department = 'Development' and id = 2;
+
+select * from "Employee" where designation='Manager';
+   -> Expected Response -: InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query as it might 
+   involve data filtering and thus may have unpredictable performance. If you want to execute this query despite 
+   the performance unpredictability, use ALLOW FILTERING"
+
+   -> Fix for above is ALLOW FILTERING, but is not recommended;
+   select * from "Employee" where designation='Manager' ALLOW FILTERING ;
+
+
+#Drop TABLE
+drop table employee;
