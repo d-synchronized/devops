@@ -1,0 +1,25 @@
+#Cassandra some miscellenous queries
+
+#Get Insert time for the column
+select writetime(firstName) from "Employee";
+
+#Get token value for a column, basically hash value 
+select token(department),department from "Employee";
+
+#Time to Live 
+create table otpexample(
+   id int,
+   otp int,
+   PRIMARY KEY (id)
+);
+
+insert into otpexample(id,otp) values(2,6678) using ttl 30;
+
+#Calculate remaining time of ttl enabled column or row
+select id,otp,ttl(otp) from otpexample;
+
+#Add new Column
+alter table employee add phone text;
+
+#Drop any Column
+alter table "Employee" drop phone;
