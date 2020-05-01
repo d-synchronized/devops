@@ -1,0 +1,147 @@
+#Complex Data Type Cassandra
+  1. List represented as [ , , ]
+  2. Set  represented as { , , }
+  3. Map represented as {'':'' , '':'' , '':''}
+  
+#Lists
+
+create table batsmen (
+id int,
+fullName varchar,
+last5Scores list<int>,
+primary key(id)
+);
+
+insert into batsmen(id,fullName,last5Scores) values(1 , 'Virat Kohli' , [100,90,78,0,23]);
+
+#Set whole list to blank
+update batsmen set last5scores = [] where id = 1;
+
+#insert new values to the list
+update batsmen set last5scores = last5scores+[10] where id = 1;
+update batsmen set last5scores = last5scores+[20] where id = 1;
+update batsmen set last5scores = last5scores+[30] where id = 1;
+update batsmen set last5scores = last5scores+[40] where id = 1;
+update batsmen set last5scores = last5scores+[50] where id = 1;
+
+#Delete a particular value in the list
+update batsmen set last5scores = last5scores-[30] where id = 1;
+select * from batsmen ;
+
+ id | fullname    | last5scores
+----+-------------+------------------
+  1 | Virat Kohli | [10, 20, 40, 50]
+  
+#Set list values at once  
+update batsmen set last5scores = [10,20,30,40,50] where id = 1;
+
+
+#SETS
+
+create table passportholder(
+id int,
+name varchar,
+passports set<varchar>,
+primary key(id)
+);
+
+#Insert value to set in a table
+insert into passportholder(id,name,passports) values(1, 'Dishant Anand' , {'X1234' , 'Y1234'});
+select * from passportholder;
+
+ id | name          | passports
+----+---------------+--------------------
+  1 | Dishant Anand | {'X1234', 'Y1234'}
+  
+#Update value of set in a table
+update passportholder set passports = passports  + {'Z1234'} where id = 1;
+select * from passportholder ;
+ id | name          | passports
+----+---------------+-----------------------------
+  1 | Dishant Anand | {'X1234', 'Y1234', 'Z1234'}
+
+#Delete value of set in a table  
+update passportholder set passports = passports  - {'X1234'} where id = 1;
+select * from passportholder ;
+
+ id | name          | passports
+----+---------------+--------------------
+  1 | Dishant Anand | {'Y1234', 'Z1234'}
+  
+  
+# Working With MAPS
+
+create todo(
+    id int,
+    name varchar,
+    mytodo map<int,varchar>,
+    primary key(id)
+);
+
+# Insert into todo 
+Insert into todo(id,name,mytodo) 
+values(1 , 'Dishant anand' , {1:'My Notes 1' , 2 : 'My Notes 2' , 3 : 'My Notes 3'});
+
+Select * from todo;
+ id | mytodo                                              | name
+----+-----------------------------------------------------+---------------
+  1 | {1: 'My Notes 1', 2: 'My Notes 2', 3: 'My Notes 3'} | Dishant anand
+  
+#Update mytodo , element at index 3
+Update todo set mytodo=mytodo + {3 : 'My Updated Notes 3'} where id = 1;
+Select * from todo;
+
+ id | mytodo                                                      | name
+----+-------------------------------------------------------------+---------------
+  1 | {1: 'My Notes 1', 2: 'My Notes 2', 3: 'My Updated Notes 3'} | Dishant anand
+  
+
+# Setting to blank
+update todo set mytodo = {} where id = 1;
+select * from todo;
+
+ id | mytodo | name
+----+--------+---------------
+  1 |   null | Dishant anand
+  
+# Set todo map with new values
+update todo set mytodo = mytodo + {1 : 'New Notes 1' , 2 : 'New Notes 2'} where id = 1;
+select * from todo;
+
+ id | mytodo                               | name
+----+--------------------------------------+---------------
+  1 | {1: 'New Notes 1', 2: 'New Notes 2'} | Dishant anand
+  
+# Delete one element from todo map
+update todo set mytodo=mytodo - {2} where id = 1;
+select * from todo;
+
+ id | mytodo             | name
+----+--------------------+---------------
+  1 | {1: 'New Notes 1'} | Dishant anand
+  
+#User defined Functions and usage , As of Cassandra 3.0 there is a sandbox in place that should 
+prevent execution of evil code.Go inside ~\Cassandra\apache-cassandra-3.11.6\conf and update 
+enable_user_defined_functions to true.
+
+enable_user_defined_functions: true
+
+CREATE OR REPLACE FUNCTION lookup(k int, m map<int,varchar>)
+  RETURNS NULL ON NULL INPUT
+  RETURNS TEXT
+  LANGUAGE Java
+AS 'return (String)m.get(k);';  
+
+# Example of calling a custom function and getting the value from the map.
+select lookup(1 , mytodo) from todo where id = 1;
+
+ test.lookup(1, mytodo)
+------------------------
+            New Notes 1
+
+select lookup(2 , mytodo) from todo where id = 1;
+
+ test.lookup(2, mytodo)
+------------------------
+            New Notes 2
+
