@@ -10,9 +10,14 @@ Step 3. Environment Variables
    1. Add CASSANDRA_HOME=~\Cassandra\apache-cassandra-3.11.6 (Path where cassandra is installed basically the home directory)
    2. Change Path variable = Append %CASSANDRA_HOME%/bin to the end in the Path variable value
    3. Change Path variable = Append C:\Python27; to the end in the Path variable value
-   4. Click Save
-   
-Step 4. Open Command Prompt and type cassandra and wait for a minute, you will see lines printing on the console and when it stops 
+   4. Change Path variable = Append C:\Python27\Scripts; to the end in the Path variable(required for auto completion of CQLSH),
+      otherwise you will get warnings saying 'WARNING: pyreadline dependency missing.  Install to enable tab completion.' on the
+      command line in windows when we run command 'cqlsh'.
+   5. Click Save
+
+Step 5. Run 'pip install pyreadline' to install pyreadline for autocompletion of cqlsh commands.
+
+Step 4. Open Command Prompt and type `cassandra` and wait for a minute, you will see lines printing on the console and when it stops 
 it will say that starting listening for CQL clients on localhost.
 
 Note - Donot Close this window. Let it run!
