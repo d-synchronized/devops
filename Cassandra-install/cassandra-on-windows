@@ -1,0 +1,22 @@
+#Cassandra-Installation-Instructions
+
+Step 1. PRE-REQUISITE
+Install python using https://www.python.org/ftp/python/2.7.18/python-2.7.18.amd64.msi as Cassandra CQSHL requires python
+
+Step 2. Download cassandra
+https://cassandra.apache.org/download/
+
+Step 3. Environment Variables
+   1. Add CASSANDRA_HOME=~\Cassandra\apache-cassandra-3.11.6 (Path where cassandra is installed basically the home directory)
+   2. Change Path variable = Append %CASSANDRA_HOME%/bin to the end in the Path variable value
+   3. Change Path variable = Append C:\Python27; to the end in the Path variable value
+   4. Click Save
+   
+Step 4. Open Command Prompt and type cassandra and wait for a minute, you will see lines printing on the console and when it stops 
+it will say that starting listening for CQL clients on localhost.
+
+Note - Donot Close this window. Let it run!
+
+Step 5. Open Command Prompt and type 'cqlsh'
+
+DONE!
