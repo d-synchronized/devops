@@ -44,3 +44,22 @@ swapoff -a (always switch off swap it is not supported currently)
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+root@kmaster-vm:~# kubectl get nodes
+NAME         STATUS     ROLES    AGE   VERSION
+kmaster-vm   Ready      master   31m   v1.18.2
+kslave       NotReady   <none>   18s   v1.18.2
+
+
+root@kmaster-vm:~# kubectl get all --all-namespaces
+NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
+kube-system   pod/coredns-66bff467f8-29nhp             0/1     Pending   0          12m
+kube-system   pod/coredns-66bff467f8-q2wfs             0/1     Pending   0          12m
+kube-system   pod/etcd-kmaster-vm                      1/1     Running   0          13m
+kube-system   pod/kube-apiserver-kmaster-vm            1/1     Running   0          13m
+kube-system   pod/kube-controller-manager-kmaster-vm   1/1     Running   0          13m
+kube-system   pod/kube-flannel-ds-amd64-4p46c          1/1     Running   0          63s
+kube-system   pod/kube-proxy-n6tdh                     1/1     Running   0          12m
+kube-system   pod/kube-scheduler-kmaster-vm            1/1     Running   0          13m
+
