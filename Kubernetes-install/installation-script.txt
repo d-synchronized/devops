@@ -63,3 +63,7 @@ kube-system   pod/kube-flannel-ds-amd64-4p46c          1/1     Running   0      
 kube-system   pod/kube-proxy-n6tdh                     1/1     Running   0          12m
 kube-system   pod/kube-scheduler-kmaster-vm            1/1     Running   0          13m
 
+
+To regenrate the token
+token=`kubeadm token generate`
+kubeadm token create "$token" --print-join-command --ttl=0
