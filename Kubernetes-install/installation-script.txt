@@ -1,0 +1,46 @@
+# Step 1 ON KMaster
+sudo apt-get update
+
+ps aux | grep -i apt
+sudo killall apt apt-get
+
+#https://itsfoss.com/could-not-get-lock-error/ 
+-> In case apt is locked by some system update or some background process
+   sudo rm /var/lib/apt/lists/lock
+   sudo rm /var/cache/apt/archives/lock
+   sudo rm /var/lib/dpkg/lock
+   sudo dpkg --configure -a
+
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update ; clear
+sudo apt-get install -y docker-ce
+sudo service docker start ; clear
+
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update ; clear
+sudo apt-get install -y kubelet kubeadm kubectl	
+
+
+# Step 2 On KMaster
+swapoff -a (Make sure the swapp is turned off)
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+Install Netwoking solution (I choose flannel)
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
+
+
+# Step 3 On KNode
+swapoff -a (always switch off swap it is not supported currently)
+
+-> We get below commands from KMaster after kubeadm init , Copy from there to all KNodes 
+  kubeadm join 192.168.1.4:6443 --token 5orv2u.suc3xba6hyg5j8zv \
+    --discovery-token-ca-cert-hash sha256:6cf51188fa726daa4c5b2c7a3ae9a7305a194af63d7c398abe06e9615d85c0e9
+
+# To run the kubectl client , Run On KMaster
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
