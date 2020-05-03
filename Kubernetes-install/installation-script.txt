@@ -38,7 +38,7 @@ swapoff -a (always switch off swap it is not supported currently)
 
 -> We get below commands from KMaster after kubeadm init , Copy from there to all KNodes 
   kubeadm join 192.168.1.4:6443 --token 5orv2u.suc3xba6hyg5j8zv \
-    --discovery-token-ca-cert-hash sha256:6cf51188fa726daa4c5b2c7a3ae9a7305a194af63d7c398abe06e9615d85c0e9
+    --discovery-token-ca-cert-hash sha256:6cf51188fa726daa4c5b2c7a3ae9a7305a194af63d7c398abe06e9615d85c0e9 --v=2
 
 # To run the kubectl client , Run On KMaster
 mkdir -p $HOME/.kube
@@ -67,3 +67,26 @@ kube-system   pod/kube-scheduler-kmaster-vm            1/1     Running   0      
 To regenrate the token
 token=`kubeadm token generate`
 kubeadm token create "$token" --print-join-command --ttl=0
+
+kubectl get pods --all-namespaces
+
+
+root@kmaster-vm:~# kubectl get pods --all-namespaces -o wide
+NAMESPACE     NAME                                 READY   STATUS    RESTARTS   AGE   IP             NODE         NOMINATED NODE   READINESS GATES
+kube-system   coredns-66bff467f8-29nhp             1/1     Running   0          51m   10.244.0.3     kmaster-vm   <none>           <none>
+kube-system   coredns-66bff467f8-q2wfs             1/1     Running   0          51m   10.244.0.2     kmaster-vm   <none>           <none>
+kube-system   etcd-kmaster-vm                      1/1     Running   0          51m   192.168.1.4    kmaster-vm   <none>           <none>
+kube-system   kube-apiserver-kmaster-vm            1/1     Running   0          51m   192.168.1.4    kmaster-vm   <none>           <none>
+kube-system   kube-controller-manager-kmaster-vm   1/1     Running   0          51m   192.168.1.4    kmaster-vm   <none>           <none>
+kube-system   kube-flannel-ds-amd64-4p46c          1/1     Running   0          39m   192.168.1.4    kmaster-vm   <none>           <none>
+kube-system   kube-flannel-ds-amd64-5bbnk          1/1     Running   1          20m   192.168.1.27   kslave       <none>           <none>
+kube-system   kube-proxy-n6tdh                     1/1     Running   0          51m   192.168.1.4    kmaster-vm   <none>           <none>
+kube-system   kube-proxy-ps8zf                     1/1     Running   0          20m   192.168.1.27   kslave       <none>           <none>
+kube-system   kube-scheduler-kmaster-vm            1/1     Running   0          51m   192.168.1.4    kmaster-vm   <none>           <none>
+
+
+ netstat -lnp | grep 1025
+
+
+# Reset the Cluster
+kubeadm reset

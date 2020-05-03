@@ -1,0 +1,59 @@
+Types of Pods
+1. Single Container Pods
+2. Multi Contaner Pods
+3. Static Pods
+4. Init Container Pods
+
+# Single Container Pods
+
+Example -: 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: singleContainerPod
+    name: singleContainerPod
+spec:
+  containers:
+  - image: tomcat
+    name: mytomcatPod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+# Multi Container Pods
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: multiContainerPod
+    name: multiContainerPod
+spec:
+  containers:
+  - image: nginx
+    name: mynginxPod
+	ports: 
+	  - containerPort: 80
+    resources: {}
+  - image: tomcat
+    name: mytomcatPod
+	ports: 
+	  - containerPort: 8080
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+# Static Pods
+
+vi /var/lib/kubelet/config.yaml
+staticPodPath: /etc/kubernetes/manifests
+
+copy yaml to above and the container will automatically start within 5 seconds.
+
+Note static pods can not be deleted , Inside KMaster, cd into /etc/kubernetes/manifest and remove the file and the static pod will be gone

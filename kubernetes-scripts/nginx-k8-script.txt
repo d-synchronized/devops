@@ -1,0 +1,110 @@
+# Execute the script
+kubectl create -f nginx.yml( show line number :set number)
+pod/mypod created
+
+kubectl get pod
+NAME                     READY   STATUS    RESTARTS   AGE
+mytomcatpod-kmaster-vm   2/2     Running   0          6m40s
+
+
+kubectl get pod -o wide
+NAME                     READY   STATUS    RESTARTS   AGE     IP           NODE         NOMINATED NODE   READINESS GATES
+mytomcatpod-kmaster-vm   2/2     Running   0          6m59s   10.244.0.5   kmaster-vm   <none>           <none>
+
+
+kubectl describe pod mytomcatpod-kmaster-vm
+Name:         mytomcatpod-kmaster-vm
+Namespace:    default
+Priority:     0
+Node:         kmaster-vm/192.168.1.4
+Start Time:   Sun, 03 May 2020 13:52:11 +0530
+Labels:       run=mytomcatpod
+Annotations:  kubernetes.io/config.hash: f83a61b3bedadc3cfe6927cc517ea33d
+              kubernetes.io/config.mirror: f83a61b3bedadc3cfe6927cc517ea33d
+              kubernetes.io/config.seen: 2020-05-03T13:52:11.812967304+05:30
+              kubernetes.io/config.source: file
+Status:       Running
+IP:           10.244.0.5
+IPs:
+  IP:           10.244.0.5
+Controlled By:  Node/kmaster-vm
+Containers:
+  mynginxpod:
+    Container ID:   docker://559f43f5d9922ca15b375c1253146e20aec0506600b1d8e855fb75991b1f0178
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:86ae264c3f4acb99b2dee4d0098c40cb8c46dcf9e1148f05d3a51c4df6758c12
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 03 May 2020 13:52:35 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:         <none>
+  mytomcatpod:
+    Container ID:   docker://55a6dd0cce54f4caf642cac2352df8d722bc66de37ef9f6d98ff1a51a319258c
+    Image:          tomcat
+    Image ID:       docker-pullable://tomcat@sha256:cae591b6f798359b0ba2bdd9cc248e695ac6e14d20722c5ff82a9a138719896f
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 03 May 2020 13:53:59 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:         <none>
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:            <none>
+QoS Class:          BestEffort
+Node-Selectors:     <none>
+Tolerations:        :NoExecute
+Events:
+  Type    Reason   Age    From                 Message
+  ----    ------   ----   ----                 -------
+  Normal  Pulling  7m41s  kubelet, kmaster-vm  Pulling image "nginx"
+  Normal  Pulled   7m21s  kubelet, kmaster-vm  Successfully pulled image "nginx"
+  Normal  Created  7m18s  kubelet, kmaster-vm  Created container mynginxpod
+  Normal  Started  7m17s  kubelet, kmaster-vm  Started container mynginxpod
+  Normal  Pulling  7m17s  kubelet, kmaster-vm  Pulling image "tomcat"
+  Normal  Pulled   5m57s  kubelet, kmaster-vm  Successfully pulled image "tomcat"
+  Normal  Created  5m54s  kubelet, kmaster-vm  Created container mytomcatpod
+  Normal  Started  5m54s  kubelet, kmaster-vm  Started container mytomcatpod
+
+
+#To delete a Pod
+kubectl delete pod NAME_OF_POD --now
+
+
+
+kubectl run mypod --image=nginx --dry-run -o yaml(only dry run, dont start the pod)
+
+kubectl run mypod --image=nginx (run the nginx pod)
+
+# Bash into the container
+
+-> Get Container name
+kubectl describe pod mypod
+kubectl describe  pod mypod
+Name:         mypod
+Namespace:    default
+Priority:     0
+Node:         kslave/192.168.1.27
+Start Time:   Sun, 03 May 2020 14:11:27 +0530
+Labels:       app=web
+              env=dev
+Annotations:  <none>
+Status:       Running
+IP:           10.244.1.5
+IPs:
+  IP:  10.244.1.5
+Containers:
+  nginxcontainer:
+    Container ID:   docker://c4307020ddff518ff08f671a3126fdf79fa950e64469434c8e45a06cca647eb3
+
+-> Bash to container
+kubectl exec -it mypod -c nginxcontainer -- /bin/bash

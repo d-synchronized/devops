@@ -1,0 +1,14 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mypod
+  labels: 
+    app: web
+	env: dev
+spec:
+  containers: 
+    - name: Nginx Container
+      image: nginx
+      ports:
+        - containerPort: 80
+        
